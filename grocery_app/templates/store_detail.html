@@ -13,24 +13,27 @@
         <a href="/item/{{ item.id }}"><img src="{{ item.photo_url }}" alt="{{ item.name }}" width="200px">
         <p><strong>{{ item.name }}</strong></p></a>
         <p><strong>Price: ${{ item.price }}</strong></p>
+        
     </div>
     {% endfor %}
+    <p><strong>Creator: ${{ store.created_by }}</strong></p>
 </div>
+
 
 
 <h2>Edit Store</h2>
 
-<form>
+<form method="POST" action= "{{ url_for('auth.store_detail', store_id=store.id) }}" >
+    {{ form.csrf_token }}
     <fieldset>
         <legend>Please enter your information:</legend>
-
-
-
-        <!-- TODO: Remove the next paragraph and use the `form` object passed in 
-            from the route to render a form. -->
-        <p><em>Form fields go here!</em></p>
-
-        <input type="submit" value="Submit">
+        {{ form.title.label }}
+        {{ form.title }}
+        
+        {{ form.address.label }}
+        {{ form.address}}
+        
+        {{ form.submit }}
     </fieldset>
 </form>
 

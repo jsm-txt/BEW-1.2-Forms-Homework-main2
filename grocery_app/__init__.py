@@ -1,5 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+
+
 from grocery_app.config import Config
 import os
 
@@ -13,7 +16,7 @@ from grocery_app.routes import main
 
 app.register_blueprint(main)
 
-from grocery_app.auth.routes import auth
+from grocery_app.routes import auth
 app.register_blueprint(auth)
 
 with app.app_context():
@@ -23,10 +26,10 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 
-from models import User
+from .models import User
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
 
-bcrypt = Bcrypt(app)
+

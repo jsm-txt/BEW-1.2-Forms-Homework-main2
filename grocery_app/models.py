@@ -1,5 +1,6 @@
 from sqlalchemy_utils import URLType
-
+from flask_login import UserMixin
+from sqlalchemy.orm import backref
 from grocery_app import db
 from grocery_app.utils import FormEnum
 
@@ -11,7 +12,7 @@ class ItemCategory(FormEnum):
     PANTRY = 'Pantry'
     FROZEN = 'Frozen'
     OTHER = 'Other'
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False, unique=True)
     password = db.Column(db.String(200), nullable=False)
