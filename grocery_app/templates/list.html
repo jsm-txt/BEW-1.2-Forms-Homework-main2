@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+{% for item in slist %}
+<p> Item name: {{item.name}}    </p>
+<p> item price {{ item.price}}    </p>
+{% endfor %}
+
+{% endblock %}

@@ -68,6 +68,7 @@ def logout():
     return redirect(url_for('main.homepage'))
 
 @auth.route('/new_store', methods=['GET', 'POST'])
+@login_required
 def new_store():
     # TODO: Create a GroceryStoreForm
     form = GroceryStoreForm()
@@ -93,7 +94,8 @@ def new_store():
 
 
 
-@auth.route('/new_item', methods=['GET', 'POST'])
+@main.route('/new_item', methods=['GET', 'POST'])
+@login_required
 def new_item():
     # TODO: Create a GroceryItemForm
     form = GroceryItemForm()
@@ -114,13 +116,14 @@ def new_item():
         db.session.commit()
 
         flash('Item was created successfully.')
-        return redirect(url_for('auth.item_detail', item_id=new_item.id))
+        return redirect(url_for('main.item_detail', item_id=new_item.id))
 
     # TODO: Send the form to the template and use it to render the form fields
     return render_template('new_item.html',form=form)
 
 
 @auth.route('/store/<store_id>', methods=['GET', 'POST'])
+@login_required
 def store_detail(store_id):
     store = GroceryStore.query.get(store_id)
     # TODO: Create a GroceryStoreForm and pass in `obj=store`
@@ -144,7 +147,8 @@ def store_detail(store_id):
     return render_template('store_detail.html', store_id=store_id, form=form, store=store)
 
 
-@auth.route('/item/<item_id>', methods=['GET', 'POST'])
+@main.route('/item/<item_id>', methods=['GET', 'POST'])
+@login_required
 def item_detail(item_id):
     item = GroceryItem.query.get(item_id)
     # TODO: Create a GroceryItemForm and pass in `obj=item`
@@ -156,14 +160,39 @@ def item_detail(item_id):
     # - redirect the user to the item detail page.
     if form.validate_on_submit(): 
         update_item = GroceryItem(
-            title=form.title.data,
-            address=form.address.data
+            name=form.name.data,
+            price=form.price.data,
+            category=form.category.data,
+            photo_url=form.photo_url.data,
+            store=form.store.data,
+            created_by=current_user
         )
         db.session.add(update_item)
         db.session.commit()
     
         flash('Item was updated successfully.')
-        return redirect(url_for('auth.store_detail', item_id=update_item.id))
+        return redirect(url_for('main.item_detail', item_id=update_item.id))
+
     # TODO: Send the form to the template and use it to render the form fields
     item = GroceryItem.query.get(item_id)
     return render_template('item_detail.html', item_id=item_id ,form=form, item=item)
+
+@main.route('/add_to_shopping_list/<item_id>', methods=['POST'])
+def add_to_shopping_list(item_id):
+    item = GroceryItem.query.get(item_id)
+    shopping_list = User(
+        shopping_list_items=item)
+    db.session.add(shopping_list)
+    db.session.commit()
+    flash('successful')
+    return redirect(url_for('main.store_detail', item_id=item.id))
+
+@main.route('/shopping_list')
+@login_required
+def shopping_list():
+    # ... get logged in user's shopping list items ...
+    # ... display shopping list items in a template ...
+    slist = User.shopping_list_items.query.all()
+    return render_template('list.html', 
+        slist=slist)
+

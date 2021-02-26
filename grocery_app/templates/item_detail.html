@@ -10,11 +10,11 @@
 <p><strong>Category:</strong> {{ item.category }}</p>
 
 <p><strong>Store:</strong> {{ item.store.title }}</p>
-<p><strong>Creator : ${{ item.created_by }}</strong></p>
+<p><strong>Creator :{{ item.created_by }}</strong></p>
 
 <h2>Edit Item</h2>
 
-<form method="POST" action= "{{ url_for('auth.item_detail', item_id=item.id) }}" >
+<form method="POST" action= "{{ url_for('main.item_detail', item_id=item.id) }}" >
     {{ form.csrf_token }}
     <fieldset>
         <legend>Please enter your information:</legend>
@@ -37,4 +37,11 @@
     </fieldset>
 </form>
 
+
+<form method="POST" action= "{{ url_for('main.add_to_shopping_list', item_id=item.id) }}"
+>{{csrf_token}}
+<button>
+    add item to your shopping list!
+</button>
+</form>
 {% endblock %}
